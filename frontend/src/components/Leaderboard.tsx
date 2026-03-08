@@ -41,7 +41,7 @@ const Leaderboard: React.FC = () => {
   const prevLeaderboardRef = useRef<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    const ws = new WebSocket(process.env.REACT_APP_BACKEND_URL || 'ws://localhost:3000');
+    const ws = new WebSocket('ws://192.168.56.102:30923');
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);

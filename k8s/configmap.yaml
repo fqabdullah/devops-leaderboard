@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: leaderboard
+data:
+  # Redis connection
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_URL: "redis://redis-service:6379"
+  
+  # Backend settings
+  BACKEND_PORT: "3000"
+  
+  # Frontend settings
+  FRONTEND_PORT: "80"
+  
+  # Environment
+  NODE_ENV: "production"
