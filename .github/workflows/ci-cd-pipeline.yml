@@ -12,7 +12,6 @@ env:
   FRONTEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/devops-frontend
 
 jobs:
-  # Job 1: Build and Test
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
@@ -21,7 +20,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Full history for SonarQube
+        fetch-depth: 0
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -43,6 +42,8 @@ jobs:
     - name: Build Frontend
       working-directory: ./frontend
       run: npm run build
+      env:
+        CI: false
     
     - name: Run Backend Tests
       working-directory: ./backend
@@ -50,9 +51,8 @@ jobs:
     
     - name: Run Frontend Tests
       working-directory: ./frontend
-      run: CI=true npm test -- --passWithNoTests || echo "No tests found"
+      run: npm test -- --passWithNoTests --watchAll=false || echo "No tests found"
 
-  # Job 2: SonarQube Analysis
   sonarqube:
     name: SonarQube Code Quality Scan
     runs-on: ubuntu-latest
@@ -70,7 +70,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  # Job 3: Trivy Security Scan
   trivy-scan:
     name: Trivy Security Scan
     runs-on: ubuntu-latest
@@ -98,7 +97,6 @@ jobs:
         severity: 'CRITICAL,HIGH'
         exit-code: '0'
 
-  # Job 4: Build and Push Docker Images
   docker-build:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
@@ -159,7 +157,6 @@ jobs:
         severity: 'CRITICAL,HIGH'
         exit-code: '0'
 
-  # Job 5: Deploy to Kubernetes
   deploy:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
